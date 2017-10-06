@@ -80,15 +80,15 @@ class Bet:
                 elif args[0] == Zone.THIRD12:
                     self.spaces = [Space(s) for s in range(25, 37)]
                 elif args[0] == Zone.FIRST18:
-                    pass
+                    self.spaces = [Space(s) for s in range(1, 19)]
                 elif args[0] == Zone.SECOND18:
-                    pass
+                    self.spaces = [Space(s) for s in range(19, 37)]
                 elif args[0] == Zone.FIRSTCOL:
-                    pass
+                    self.spaces = [Space(s) for s in range(1, 37) if s%3==1]
                 elif args[0] == Zone.SECONDCOL:
-                    pass
+                    self.spaces = [Space(s) for s in range(1, 37) if s%3==2]
                 elif args[0] == Zone.THIRDCOL:
-                    pass
+                    self.spaces = [Space(s) for s in range(1, 37) if s%3==0]
             
             self.amount = args[1]
             
@@ -108,7 +108,7 @@ class Wheel:
         # Mode being American or European
         self.mode = mode
         self.spaces = []
-        for x in range(0, 4):
+        for x in range(0, 37):
             self.spaces.append(Space(x))
         if self.mode == 'US':
             self.spaces.append(Space(37))
@@ -132,7 +132,7 @@ class Game:
         for bet in bets:
             if bet.type == 'space':
                 if result == bet.space:
-                    total += 2*bet.amount
+                    total += 36*bet.amount
                     
             elif bet.type in ['color', 'parity']:
                 if result in bet.spaces:
@@ -140,15 +140,17 @@ class Game:
 
             elif bet.type == 'pair':
                 if result in bet.spaces:
-                    total += 4*bet.amount
+                    total += 18*bet.amount
                 
             elif bet.type == 'corner':
                 if result in bet.spaces:
                     total += 8*bet.amount
 
             elif bet.type == 'zone':
-                if len(bet.spaces) == 12: #FIRST12, SECOND12, THIRD12
-                    pass
+                if len(bet.spaces) == 12: #FIRST12, SECOND12, THIRD12, FIRSTCOL, SECONDCOL, THIRDCOL
+                    total += 3*bet.amount
+                elif len(bet.spaces) == 18: #FIRST18, SECOND18
+                    total += 2*bet.amount
             
         return total
 
